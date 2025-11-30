@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Bồi Thường Đất - Xuân Lộc</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for luxury/professional dark theme and responsive design */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
+
+        :root {
+            --primary-blue: #06b6d4; /* Cyan 500 */
+            --secondary-gold: #FBBF24; /* Amber/Gold */
+            --bg-dark: #10162A; /* Deep Navy Blue for luxury feel */
+            --card-dark: #1F2937; /* Dark Slate for cards */
+            --text-light: #E0E7FF; /* Off-white / light lavender */
+            --text-accent: #3B82F6; /* Sky Blue */
+        }
+        body {
+            /* Sử dụng Roboto để đảm bảo font tiếng Việt tốt và chuyên nghiệp */
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            scroll-behavior: smooth;
+        }
+        .flow-card {
+            background-color: var(--card-dark);
+            border: 1px solid #374151; /* Subtle border */
+            border-radius: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            min-height: 12rem;
+            opacity: 0; 
+            transform: translateY(20px);
+        }
+        .flow-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .flow-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.5); /* Blue glow on hover */
+        }
+        .icon-box {
+            background: var(--text-accent); 
+            color: #fff;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 0.5rem; 
+        }
+        .banner-overlay {
+            /* Hình ảnh Banner mới nhất */
+            background-image: url('2.jpg-5dd99be8-8257-43f1-bba8-69e21d89f53a');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+            height: 20rem; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .banner-title-text {
+            color: var(--primary-blue); 
+            font-size: 3rem; 
+            font-weight: 900;
+            text-shadow: 0 0 15px rgba(6, 182, 212, 0.9);
+            position: relative;
+            z-index: 30;
+        }
+        .banner-subtitle-text {
+            color: var(--primary-blue); 
+            font-size: 6rem; 
+            font-weight: 900;
+            text-shadow: 0 0 20px rgba(6, 182, 212, 1);
+            line-height: 1; 
+            position: relative;
+            z-index: 30;
+        }
+
+        /* --- NEW: High-Tech Banner Effects --- */
+        
+        /* Keyframes cho hiệu ứng Chìm Nổi (Pulse Glow) */
+        @keyframes pulseGlow {
+            0% { text-shadow: 0 0 5px var(--primary-blue), 0 0 10px var(--primary-blue), 0 0 15px rgba(6, 182, 212, 0.5); opacity: 1; }
+            50% { text-shadow: 0 0 10px var(--primary-blue), 0 0 20px var(--primary-blue), 0 0 30px rgba(6, 182, 212, 0.8); opacity: 0.9; }
+            100% { text-shadow: 0 0 5px var(--primary-blue), 0 0 10px var(--primary-blue), 0 0 15px rgba(6, 182, 212, 0.5); opacity: 1; }
+        }
+
+        /* Keyframes cho hiệu ứng Chữ Nổi (Floating Text) */
+        @keyframes floatEffect {
+            0% { transform: translateY(0px) rotate(0deg); opacity: 0.2; }
+            25% { transform: translateY(-5px) rotate(-1deg); opacity: 0.3; }
+            50% { transform: translateY(0px) rotate(0deg); opacity: 0.4; }
+            75% { transform: translateY(5px) rotate(1deg); opacity: 0.3; }
+            100% { transform: translateY(0px) rotate(0deg); opacity: 0.2; }
+        }
+        
+        .pulse-glow {
+            animation: pulseGlow 4s infinite alternate ease-in-out;
+        }
+
+        /* Container cho hiệu ứng chữ động bao quanh */
+        .tech-float-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 10;
+        }
+        
+        .floating-word {
+            position: absolute;
+            color: var(--primary-blue);
+            font-size: 1.2rem;
+            font-weight: 700;
+            white-space: nowrap;
+            animation: floatEffect 15s infinite alternate ease-in-out;
+            opacity: 0.3;
+            text-shadow: 0 0 5px var(--primary-blue);
+            pointer-events: none;
+        }
+        /* Định vị các chữ động bao quanh chữ TRUNG TÂM PHÁT TRIỂN QUỸ ĐẤT */
+        .floating-word:nth-child(1) { top: 15%; left: 10%; animation-duration: 18s; animation-delay: 0s; }
+        .floating-word:nth-child(2) { top: 20%; right: 5%; font-size: 1.5rem; animation-duration: 12s; animation-delay: 2s; }
+        .floating-word:nth-child(3) { bottom: 10%; left: 20%; animation-duration: 22s; animation-delay: 4s; }
+        .floating-word:nth-child(4) { bottom: 5%; right: 15%; font-size: 1.8rem; animation-duration: 16s; animation-delay: 6s; }
+        .floating-word:nth-child(5) { top: 40%; left: 5%; animation-duration: 10s; animation-delay: 8s; }
+        .floating-word:nth-child(6) { bottom: 30%; right: 10%; animation-duration: 25s; animation-delay: 10s; }
+
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .banner-title-text {
+                font-size: 1.5rem; 
+            }
+            .banner-subtitle-text {
+                font-size: 3rem;
+            }
+            .banner-overlay {
+                height: 12rem;
+            }
+            .floating-word {
+                font-size: 0.8rem;
+                opacity: 0.15;
+            }
+        }
+        /* End New Effects */
+
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background-color: rgba(16, 22, 42, 0.95);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+            border-bottom: 2px solid #3b82f6;
+        }
+        .step-title, .step-unit {
+            color: var(--text-light);
+        }
+        .step-time {
+            color: var(--secondary-gold);
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="text-light">
+
+    <div class="container mx-auto p-4 md:p-8 lg:p-12">
+        
+        <!-- HEADER AND BANNER SECTION -->
+        <header class="mb-10 rounded-xl overflow-hidden shadow-2xl">
+            <!-- Banner Section -->
+            <div class="banner-overlay w-full relative">
+                <!-- Dark Overlay for high contrast -->
+                <div class="absolute inset-0 bg-black opacity-50"></div>
+                
+                <!-- NEW: Tech Floating Text Effect -->
+                <div class="tech-float-container">
+                    <div class="floating-word">DỮ LIỆU SỐ</div>
+                    <div class="floating-word">GPMB 4.0</div>
+                    <div class="floating-word">ĐỒNG NAI</div>
+                    <div class="floating-word">PHÁT TRIỂN QUỸ ĐẤT</div>
+                    <div class="floating-word">FUTURE LAND</div>
+                    <div class="floating-word">SMART GPMB</div>
+                </div> 
+                
+                <!-- Main Title Section -->
+                <div class="relative z-20 text-center p-6 w-full">
+                    <!-- Apply Pulse Glow to the target text -->
+                    <h1 class="banner-title-text tracking-wider pulse-glow">
+                        TRUNG TÂM PHÁT TRIỂN QUỸ ĐẤT
+                    </h1>
+                    <h2 class="banner-subtitle-text mt-4">
+                        CHI NHÁNH XUÂN LỘC
+                    </h2>
+                    <p class="text-xs md:text-lg font-medium text-gray-200 mt-4 bg-black/60 inline-block px-4 py-2 rounded-full border border-gray-600 shadow-xl">
+                        Quy trình 20 bước Bồi thường, Hỗ trợ, Tái định cư theo Quyết định số 30/2025/QĐ-UBND tỉnh Đồng Nai
+                    </p>
+                </div>
+            </div>
+        </header>
+
+        <!-- PROCESS FLOW SECTION (20 STEPS) -->
+        <section class="mt-16">
+            <div class="sticky-header mb-8 pt-4 pb-4 rounded-b-xl">
+                <h3 class="text-2xl md:text-3xl font-bold text-center text-blue-400">
+                    QUY TRÌNH SỐ HÓA BỒI THƯỜNG, HỖ TRỢ, TÁI ĐỊNH CƯ
+                </h3>
+            </div>
+            
+            <!-- Sử dụng responsive grid: 1 cột trên mobile, 2 trên md, 3 trên lg -->
+            <div id="flow-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 relative">
+                
+                <!-- Group I: KHỞI ĐỘNG VÀ LẬP KẾ HOẠCH -->
+                <div class="col-span-1 md:col-span-2 lg:col-span-3 text-lg md:text-2xl font-semibold text-teal-400 mb-4 mt-4 border-b-2 border-teal-600 pb-2">
+                    I. KHỞI ĐỘNG VÀ LẬP KẾ HOẠCH (PREPARATION & PLANNING)
+                </div>
+
+                <!-- Step 1: Yêu cầu cung cấp thông tin (Icon Lá cờ Start) -->
+                <div class="flow-card p-5 flex flex-col justify-start" data-step="1">
+                    <div class="icon-box text-4xl mb-3">🏁</div>
+                    <div class="flex-grow">
+                        <p class="text-base md:text-lg font-bold step-title">1. Yêu cầu cung cấp thông tin chủ sử dụng đất</p>
+                        <p class="text-xs md:text-sm text-gray-400 mt-1">Nội dung: Gửi văn bản yêu cầu các cơ quan cung cấp thông tin về đất đai (chủ sử dụng, diện tích, mục đích sử dụng đất).</p>
+                        <p class="text-sm font-semibold text-green-400 mt-2">Đơn vị chủ trì: **Trung tâm PTQĐ**</p>
+                        <p class="text-sm step-time mt-1">Số ngày thực hiện: **05 ngày**</p>
+                    </div>
+                </div>
+
+                <!-- Step 2: Cung cấp thông tin đất đai -->
+                <div class="flow-card p-5 flex flex-col justify-start" data-step="2">
+                    <div class="icon-box text-4xl mb-3">💾</div>
+                    <div class="flex-grow">
+                        <p class="text-base md:text-lg font-bold step-title">2. Cung cấp thông tin đất đai, quy hoạch</p>
+                        <p class="text-xs md:text-sm text-gray-400 mt-1">Nội dung: VPĐKĐĐ/Chi nhánh hoàn thành việc cung cấp thông tin liên quan về đất đai đối với các thửa đất bị thu hồi thuộc dự án.</p>
+                        <p class="text-sm font-semibold text-green-400 mt-2">Đơn vị chủ trì: **VPĐKĐĐ/Chi nhánh, UBND cấp xã**</p>
+                        <p class="text-sm step-time mt-1">Số ngày thực hiện: **10 ngày**</p>
+                    </div>
+                </div>
+
+                <!-- Step 3: Xây dựng Kế hoạch thu hồi đất -->
+                <div class="flow-card p-5 flex flex-col justify-start" data-step="3">
+                    <div class="icon-box text-4xl mb-3">📈</div>
+                    <div class="flex-grow">
+                        <p class="text-base md:text-lg font-bold step-title">3. Xây dựng Kế hoạch thu hồi đất, điều tra, khảo sát</p>
+                        <p class="text-xs md:text-sm text-gray-400 mt-1">Nội dung: Lập, xem xét căn cứ, điều kiện thu hồi đất (Điều 80 LĐĐ 2024) và trình UBND cấp xã tổ chức thực hiện.</p>
+                        <p class="text-sm font-semibold text-green-400 mt-2">Đơn vị chủ trì: **Trung tâm PTQĐ**</p>
+                        <p class="text-sm step-time mt-1">Số ngày thực hiện: **$\leq 10$ ngày**</p>
+                    </div>
+                </div>
+                
+                <!-- Step 4: Tổ chức họp công bố chủ trương -->
+                <div class="flow-card p-5 flex flex-col justify-start" data-step="4">
+                    <div class="icon-box text-4xl mb-3">🗣️</div>
+                    <div class="flex-grow">
+                        <p class="text-base md:text-lg font-bold step-title">4. Tổ chức họp công bố chủ trương, tiếp nhận ý kiến</p>
+                        <p class="text-xs md:text-sm text-gray-400 mt-1">Nội dung: UBND cấp xã chủ trì họp để phổ biến kế hoạch thu hồi đất và tiếp nhận ý kiến (khoản 1 Điều 87 LĐĐ 2024).</p>
+                        <p class="text-sm font-semibold text-green-400 mt-2">Đơn vị chủ trì: **UBND cấp xã**</p>
+                        <p class="text-sm step-time mt-1">Số ngày thực hiện: **10 ngày**</p>
+                    </div>
+                </div>
+
+                <!-- Group II: THÔNG BÁO VÀ KIỂM ĐẾM HIỆN TRẠNG -->
+                <div class="col-span-1 md:col-span-2 lg:col-span-3 text-lg md:text-2xl font-semibold text-teal-400 mb-4 mt-8 border-b-2 border-teal-600 pb-2">
+                    II. THÔNG BÁO VÀ KIỂM ĐẾM HIỆN TRẠNG (NOTIFICATION & ASSESSMENT)
+                </div>
+
+                <!-- Step 5: Ban hành Thông báo thu hồi đất -->
+                <div class="flow-card p-5 flex flex-col justify-start" data-step="5">
+                    <div class="icon-box text-4xl mb-3">🔔</div>
+                    <div class="flex-grow">
+                        <p class="text-base md:text-lg font-bold step-title">5. Ban hành Thông báo thu hồi đất chính thức</p>
+                        <p class="text-xs md:text-sm text-gray-400 mt-1">Nội dung: Chủ tịch UBND cấp xã ban hành thông báo thu hồi đất (Nội dung theo khoản 1 Điều 85 Luật Đất đai 2024).</p>
+                        <p class="text-sm font-semibold text-green-400 mt-2">Đơn vị chủ trì: **Chủ tịch UBND cấp xã**</p>
+                        <p class="text-sm step-time mt-1">Số ngày thực hiện: **05 ngày**</p>
+                    </div>
+                </div>
+
+                <!-- Step 6: Gửi và Niêm yết Thông báo -->
+                <div class="flow-card p-5 flex flex-col justify-start" data-step="6">
+                    <div class="icon-box text-4xl mb-3">📤</div>
+                    <div class="flex-grow">
+                        <p class="text-base md:text-lg font-bold step-title">6. Gửi và Niêm yết Thông báo thu hồi đất</p>
+                        <p class="text-xs md:text-sm text-gray-400 mt-1">Nội dung: Gửi đến từng người dân, niêm yết tại UBND cấp xã, khu dân cư, đăng báo (khoản 2 Điều 87 LĐĐ 2024).</p>
+                        <p class="text-sm font-semibold text-green-400 mt-2">Đơn vị chủ trì: **Trung tâm PTQĐ, UBND cấp xã**</p>
+                        <p class="text-sm step-time mt-1">Số ngày thực hiện: **05 ngày**</p>
+                    </div>
+                </div>
+
+                <!-- Step 7: Gửi Thông báo điều tra, khảo sát -->
+                <div class="flow-card p-5 flex flex-col justify-start" data-step="7">
+                    <div class="icon-box text-4xl mb-3">🧭</div>
+                    <div class="flex-grow">
+                        <p class="text-base md:text-lg font-bold step-title">7. Gửi Thông báo về điều tra, khảo sát, kiểm đếm</p>
+                        <p class="text-xs md:text-sm text-gray-400 mt-1">Nội dung: Trung tâm PTQĐ thông báo lịch thực hiện điều tra, khảo sát, đo đạc, kiểm đếm cho người dân và các cơ quan tham gia.</p>
+                        <p class="text-sm font-semibold text-green-400 mt-2">Đơn vị chủ trì: **Trung tâm PTQĐ**</p>
+                        <p class="text-sm font-medium text-amber-500 mt-1">Số ngày thực hiện: (Không quy định cụ thể)</p>
+                    </div>
+                </div>
+
+                <!-- Step 8: Thực hiện Điều tra, Khảo sát, Đo đạc, Kiểm đếm -->
+                <div class="flow-card p-5 flex flex-col justify-start" data-step="8">
+                    <div class="icon-box text-4xl mb-3">📷</div>
+                    <div class="flex-grow">
+                        <p class="text-base md:text-lg font-bold step-title">8. Thực hiện Điều tra, Khảo sát, Đo đạc, Kiểm đếm hiện trạng</p>
+                        <p class="text-xs md:text-sm text-gray-400 mt-1">Nội dung: Lập Biên bản kiểm đếm xác định chi tiết diện tích đất, tài sản, cây trồng, vật nuôi của từng chủ sử dụng.</p>
+                        <p class="text-sm font-semibold text-green-400 mt-2">Đơn vị chủ trì: **Trung tâm PTQĐ, UBND cấp xã**</p>
+                        <p class="text-sm step-time mt-1">Số ngày thực hiện: **Liên tục/Cuốn chiếu**</p>
+                    </div>
+                </div>
+
+                <!-- Step 9: Vận động, thuyết phục (Icon Bàn tròn/Đối thoại) -->
+                <div class="flow-card p-5 flex flex-col justify-start" data-step="9">
+                    <div class="icon-box text-4xl mb-3">🤝</div> 
+                    <div class="flex-grow">
+                        <p class="text-base md:text-lg font-bold step-title">9. Vận động, thuyết phục người dân hợp tác kiểm đếm</p>
+                        <p class="text-xs md:text-sm text-gray-400 mt-1">Nội dung: Tổ chức vận động thuyết phục người dân không phối hợp kiểm đếm (áp dụng khi người dân từ chối hợp tác).</p>
+                        <p class="text-sm font-semibold text-green-400 mt-2">Đơn vị chủ trì: **UBND cấp xã, MTTQ**</p>
+                        <p class="text-sm step-time mt-1">Số ngày thực hiện: **15 ngày**</p>
+                    </div>
+                </div>
+
+                <!-- Step 10: Ban hành Quyết định kiểm đếm bắt buộc -->
+                <div class="flow-card p-5 flex flex-col justify-start" data-step="10">
+                    <div class="icon-box text-4xl mb-3">⚖️</div>
+                    <div class="flex-grow">
+                        <p class="text-base md:text-lg font-bold step-title">10. Ban hành Quyết định kiểm đếm bắt buộc và Cưỡng chế KĐBB</p>
+                        <p class="text-xs md:text-sm text-gray-400 mt-1">Nội dung: Áp dụng nếu người dân vẫn không hợp tác sau khi vận động, thuyết phục (Điều 87, Điều 88 LĐĐ 2024).</p>
+                        <p class="text-sm font-semibold text-green-400 mt-2">Đơn vị chủ trì: **Chủ tịch UBND cấp xã**</p>
+                        <p class="text-sm step-time mt-1">Số ngày thực hiện: **10 ngày (sau khi KTKDVĐ)**</p>
+                    </div>
+                </div>
+
+                <!-- Step 11: Xác định Giá đất cụ thể -->
+                <div class="flow-card p-5 flex flex-col justify-start" data-step="11">
+                    <div class="icon-box text-4xl mb-3">💰</div>
+                    <div class="flex-grow">
+                        <p class="text-base md:text-lg font-bold step-title">11. Xác định Giá đất cụ thể để bồi thường (Song song)</p>
+                        <p class="text-xs md:text-sm text-gray-400 mt-1">Nội dung: UBND cấp xã tổ chức xác định giá đất cụ thể của dự án (Theo Điều 10 QĐ 30/2025/QĐ-UBND; NĐ 71/2024/NĐ-CP).</p>
+                        <p class="text-sm font-semibold text-green-400 mt-2">Đơn vị chủ trì: **Phòng Kinh tế, UBND cấp xã**</p>
+                        <p class="text-sm step-time mt-1">Số ngày thực hiện: **10 ngày (Lập PA giá)**</p>
+                    </div>
+                </div>
+
+                <!-- Step 12: Xác nhận nguồn gốc đất, tài sản -->
+                <div class="flow-card p-5 flex flex-col justify-start" data-step="12">
+                    <div class="icon-box text-4xl mb-3">✅</div>
+                    <div class="flex-grow">
+                        <p class="text-base md:text-lg font-bold step-title">12. Xác nhận nguồn gốc đất, tài sản, hồ sơ hỗ trợ</p>
+                        <p class="text-xs md:text-sm text-gray-400 mt-1">Nội dung: UBND cấp xã xác nhận nguồn gốc, thời điểm sử dụng đất, tài sản và các hồ sơ hỗ trợ khác (Điều 11 QĐ 30/2025/QĐ-UBND).</p>
+                        <p class="text-sm font-semibold text-green-400 mt-2">Đơn vị chủ trì: **UBND cấp xã**</p>
+                        <p class="text-sm step-time mt-1">Số ngày thực hiện: **10 ngày**</p>
+                    </div>
+                </div>
+
+                <!-- Group III: LẬP, THẨM ĐỊNH VÀ PHÊ DUYỆT PHƯƠNG ÁN -->
+                <div class="col-span-1 md:col-span-2 lg:col-span-3 text-lg md:text-2xl font-semibold text-teal-400 mb-4 mt-8 border-b-2 border-teal-600 pb-2">
+                    III. LẬP, THẨM ĐỊNH VÀ PHÊ DUYỆT PHƯƠNG ÁN (PLAN APPROVAL)
+                </div>
+                
+                <!-- Step 13: Lập dự kiến Phương án Tái định cư -->
+                <div class="flow-card p-5 flex flex-col justify-start" data-step="13">
+                    <div class="icon-box text-4xl mb-3">🏘️</div>
+                    <div class="flex-grow">
+                        <p class="text-base md:text-lg font-bold step-title">13. Lập dự kiến Phương án Tái định cư và Niêm yết</p>
+                        <p class="text-xs md:text-sm text-gray-400 mt-1">Nội dung: Xây dựng dự kiến PA TĐC và niêm yết công khai tại UBND cấp xã, khu dân cư (Điều 13 QĐ 30/2025/QĐ-UBND).</p>
+                        <p class="text-sm font-semibold text-green-400 mt-2">Đơn vị chủ trì: **Trung tâm PTQĐ**</p>
+                        <p class="text-sm step-time mt-1">Số ngày thực hiện: **05 ngày (Lập) + 15 ngày (Niêm yết)**</p>
+                    </div>
+                </div>
+
+                <!-- Step 14: Lập Phương án Bồi thường, Hỗ trợ, TĐC hoàn chỉnh -->
+                <div class="flow-card p-5 flex flex-col justify-start" data-step="14">
+                    <div class="icon-box text-4xl mb-3">📝</div>
+                    <div class="flex-grow">
+                        <p class="text-base md:text-lg font-bold step-title">14. Lập Phương án Bồi thường, Hỗ trợ, TĐC hoàn chỉnh</p>
+                        <p class="text-xs md:text-sm text-gray-400 mt-1">Nội dung: Áp giá đất cụ thể và đơn giá tài sản để lập dự thảo phương án chi tiết (khoản 1 Điều 16 QĐ 30/2025/QĐ-UBND).</p>
+                        <p class="text-sm font-semibold text-green-400 mt-2">Đơn vị chủ trì: **Trung tâm PTQĐ**</p>
+                        <p class="text-sm step-time mt-1">Số ngày thực hiện: **05 ngày**</p>
+                    </div>
+                </div>
+
+                <!-- Step 15: Niêm yết công khai Phương án -->
+                <div class="flow-card p-5 flex flex-col justify-start" data-step="15">
+                    <div class="icon-box text-4xl mb-3">💬</div>
+                    <div class="flex-grow">
+                        <p class="text-base md:text-lg font-bold step-title">15. Niêm yết công khai Phương án và Tổ chức lấy ý kiến</p>
+                        <p class="text-xs md:text-sm text-gray-400 mt-1">Nội dung: Công khai 30 ngày để lấy ý kiến và tổ chức họp lấy ý kiến trực tiếp (điểm a khoản 3 Điều 87 LĐĐ 2024).</p>
+                        <p class="text-sm font-semibold text-green-400 mt-2">Đơn vị chủ trì: **UBND cấp xã, Trung tâm PTQĐ**</p>
+                        <p class="text-sm step-time mt-1">Số ngày thực hiện: **30 ngày (Niêm yết)**</p>
+                    </div>
+                </div>
+
+                <!-- Step 16: Tổ chức Đối thoại, Hoàn chỉnh Phương án -->
+                <div class="flow-card p-5 flex flex-col justify-start" data-step="16">
+                    <div class="icon-box text-4xl mb-3">🔄</div>
+                    <div class="flex-grow">
+                        <p class="text-base md:text-lg font-bold step-title">16. Tổ chức Đối thoại, Tiếp thu, Giải trình và Hoàn chỉnh Phương án</p>
+                        <p class="text-xs md:text-sm text-gray-400 mt-1">Nội dung: Tổ chức đối thoại nếu còn ý kiến không đồng ý. Hoàn chỉnh phương án trình thẩm định.</p>
+                        <p class="text-sm font-semibold text-green-400 mt-2">Đơn vị chủ trì: **Trung tâm PTQĐ, UBND cấp xã**</p>
+                        <p class="text-sm step-time mt-1">Số ngày thực hiện: **60 ngày**</p>
+                    </div>
+                </div>
+
+                <!-- Step 17: Thẩm định và Phê duyệt Phương án (Icon Thẩm định/Tìm kiếm) -->
+                <div class="flow-card p-5 flex flex-col justify-start" data-step="17">
+                    <div class="icon-box text-4xl mb-3">🔍</div> 
+                    <div class="flex-grow">
+                        <p class="text-base md:text-lg font-bold step-title">17. Thẩm định và Phê duyệt Phương án Bồi thường, Hỗ trợ, TĐC</p>
+                        <p class="text-xs md:text-sm text-gray-400 mt-1">Nội dung: Cơ quan cấp xã thẩm định, trình Chủ tịch UBND cấp xã phê duyệt (gồm cả giá đất cụ thể - Theo Điều 17 QĐ 30/2025/QĐ-UBND).</p>
+                        <p class="text-sm font-semibold text-green-400 mt-2">Đơn vị chủ trì: **Phòng Kinh tế/UBND cấp xã**</p>
+                        <p class="text-sm step-time mt-1">Số ngày thực hiện: **$\leq 30$ ngày**</p>
+                    </div>
+                </div>
+
+                <!-- Group IV: THỰC HIỆN PHƯƠNG ÁN VÀ BÀN GIAO MẶT BẰNG -->
+                <div class="col-span-1 md:col-span-2 lg:col-span-3 text-lg md:text-2xl font-semibold text-teal-400 mb-4 mt-8 border-b-2 border-teal-600 pb-2">
+                    IV. THỰC HIỆN PHƯƠNG ÁN VÀ BÀN GIAO MẶT BẰNG (EXECUTION & HANDOVER)
+                </div>
+                
+                <!-- Step 18: Phổ biến, Niêm yết Quyết định phê duyệt -->
+                <div class="flow-card p-5 flex flex-col justify-start" data-step="18">
+                    <div class="icon-box text-4xl mb-3">📰</div>
+                    <div class="flex-grow">
+                        <p class="text-base md:text-lg font-bold step-title">18. Phổ biến, Niêm yết Quyết định phê duyệt Phương án và Thông báo chi trả</p>
+                        <p class="text-xs md:text-sm text-gray-400 mt-1">Nội dung: Phổ biến, niêm yết công khai và gửi quyết định phê duyệt/thông báo chi trả đến từng người bị thu hồi đất (Điều 18 QĐ 30/2025/QĐ-UBND).</p>
+                        <p class="text-sm font-semibold text-green-400 mt-2">Đơn vị chủ trì: **Trung tâm PTQĐ, UBND cấp xã**</p>
+                        <p class="text-sm step-time mt-1">Số ngày thực hiện: **05 ngày**</p>
+                    </div>
+                </div>
+
+                <!-- Step 19: Chi trả tiền bồi thường, hỗ trợ, bố trí TĐC (Icon Tiền) -->
+                <div class="flow-card p-5 flex flex-col justify-start" data-step="19">
+                    <div class="icon-box text-4xl mb-3">💵</div> 
+                    <div class="flex-grow">
+                        <p class="text-base md:text-lg font-bold step-title">19. Chi trả tiền bồi thường, hỗ trợ, bố trí TĐC và Bàn giao mặt bằng</p>
+                        <p class="text-xs md:text-sm text-gray-400 mt-1">Nội dung: Chi trả tiền, thu hồi giấy tờ nhà đất để chỉnh lý/lưu trữ và bàn giao mặt bằng (Điều 19 QĐ 30/2025/QĐ-UBND).</p>
+                        <p class="text-sm font-semibold text-green-400 mt-2">Đơn vị chủ trì: **Trung tâm PTQĐ, Kho bạc Nhà nước**</p>
+                        <p class="text-sm step-time mt-1">Số ngày thực hiện: **30 ngày**</p>
+                    </div>
+                </div>
+
+                <!-- Step 20: Cưỡng chế thu hồi đất (Icon Khiên/Bảo vệ) -->
+                <div class="flow-card p-5 flex flex-col justify-start" data-step="20">
+                    <div class="icon-box text-4xl mb-3">🛡️</div>
+                    <div class="flex-grow">
+                        <p class="text-base md:text-lg font-bold step-title">20. Cưỡng chế thu hồi đất</p>
+                        <p class="text-xs md:text-sm text-gray-400 mt-1">Nội dung: Ban hành quyết định cưỡng chế thu hồi đất và tổ chức thực hiện nếu người dân không chấp hành quyết định thu hồi đất (Điều 93 LĐĐ 2024).</p>
+                        <p class="text-sm font-semibold text-green-400 mt-2">Đơn vị chủ trì: **UBND cấp có thẩm quyền**</p>
+                        <p class="text-sm step-time mt-1">Số ngày thực hiện: **Trong thời hạn 15 ngày**</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEPARATOR FOR EXPERIENCE SECTION -->
+        <div class="my-20">
+            <hr class="border-t-4 border-dashed border-yellow-600 opacity-60">
+        </div>
+
+        <!-- PRACTICAL EXPERIENCE SECTION -->
+        <section class="mt-16">
+            <h3 class="text-2xl md:text-3xl font-bold text-center mb-8 text-pink-500">
+                KINH NGHIỆM THỰC HIỆN VÀ BIỆN PHÁP THÁO GỠ VƯỚNG MẮC
+            </h3>
+            <p class="text-center text-gray-400 mb-10 text-sm md:text-lg">
+                *(Đúc kết từ Sổ tay Hướng dẫn GPMB 2025 - Hướng tới Chuyển đổi số trong GPMB)*
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <div class="flow-card p-6 border-t-4 border-yellow-500 visible">
+                    <h4 class="text-lg md:text-xl font-semibold mb-3 text-cyan-400 flex items-center"><span class="mr-3 text-2xl">📊</span> Quản lý Chất lượng Dữ liệu Địa chính</h4>
+                    <ul class="list-disc ml-5 text-gray-400 space-y-2 text-sm md:text-base">
+                        <li>Chủ động **chồng ghép bản đồ** để giải trình minh bạch mọi chênh lệch diện tích, đảm bảo tính pháp lý của hồ sơ kỹ thuật (HSKT).</li>
+                        <li>Đảm bảo **HSKT chính xác**, xác định rõ vị trí tài sản (trong/ngoài đất ở được công nhận) để áp dụng đúng chính sách.</li>
+                    </ul>
+                </div>
+
+                <div class="flow-card p-6 border-t-4 border-yellow-500 visible">
+                    <h4 class="text-lg md:text-xl font-semibold mb-3 text-cyan-400 flex items-center"><span class="mr-3 text-2xl">🤝</span> Xử lý Tài sản và Chủ thể Quyền phức tạp</h4>
+                    <ul class="list-disc ml-5 text-gray-400 space-y-2 text-sm md:text-base">
+                        <li>Áp dụng phương pháp **"phiên ngang"** cho tài sản không có đơn giá theo nguyên tắc giá trị bồi thường phải bằng hoặc thấp hơn tài sản tương tự có trong bộ đơn giá. **Lập biên bản phiên ngang** có chữ ký đầy đủ.</li>
+                        <li>Ghi nhận rõ trạng thái chủ thể phức tạp (**thừa kế chưa chia**, tranh chấp) ngay trong biên bản kiểm đếm.</li>
+                    </ul>
+                </div>
+                
+                <div class="flow-card p-6 border-t-4 border-yellow-500 visible">
+                    <h4 class="text-lg md:text-xl font-semibold mb-3 text-cyan-400 flex items-center"><span class="mr-3 text-2xl">⚡</span> Tối ưu hóa Thời gian Pháp lý (Digital Fast-Track)</h4>
+                    <ul class="list-disc ml-5 text-gray-400 space-y-2 text-sm md:text-base">
+                        <li>Vận động người dân ký **Đơn đề nghị thu hồi đất trước thời hạn** (khoản 2 Điều 85 LĐĐ 2024) để rút ngắn tối đa **90 ngày** của giai đoạn công khai.</li>
+                        <li>Thực hiện quy trình **xác nhận hồ sơ hỗ trợ cuốn chiếu** (nguồn gốc, nhân khẩu, nghĩa vụ tài chính) ngay sau khi kiểm đếm xong từng đợt.</li>
+                    </ul>
+                </div>
+
+                <div class="flow-card p-6 border-t-4 border-yellow-500 visible">
+                    <h4 class="text-lg md:text-xl font-semibold mb-3 text-cyan-400 flex items-center"><span class="mr-3 text-2xl">🎯</span> Quản lý Kinh phí và Phân cấp Hiệu quả</h4>
+                    <ul class="list-disc ml-5 text-gray-400 space-y-2 text-sm md:text-base">
+                        <li>Giám sát chặt chẽ việc Chủ đầu tư chuyển **50% kinh phí tổ chức thực hiện** (Điều 15 QĐ 30/2025/QĐ-UBND) để đảm bảo nguồn lực hoạt động.</li>
+                        <li>Đảm bảo **UBND cấp xã được trích 15% kinh phí** tổ chức thực hiện để nâng cao năng lực thẩm định và phê duyệt tại cơ sở.</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- FOOTER: Dấu ấn cá nhân (Product by "ducanh.bkct") -->
+        <footer class="mt-16 pb-4 text-center">
+            <p class="text-sm font-light text-gray-600 tracking-wider font-roboto" style="font-size: 14px;">
+                Product by "ducanh.bkct"
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // JavaScript for Scroll Animation (Fade-in effect)
+        document.addEventListener('DOMContentLoaded', () => {
+            const flowCards = document.querySelectorAll('.flow-card');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1 
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Tính toán độ trễ dựa trên vị trí của thẻ để tạo hiệu ứng cuốn chiếu khi cuộn
+                        const delay = entry.target.dataset.step * 75; // 75ms delay per step
+                        setTimeout(() => {
+                            entry.target.classList.add('visible');
+                        }, delay);
+                        
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            flowCards.forEach(card => {
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>
